@@ -1,0 +1,11 @@
+Legend:
+	+ added element
+	- removed element
+	* changed element
+
+===============================================================================
+Release 0.1
+===============================================================================
+
+2014-10-14	Michael Beyeler <mbeyeler@uci.edu>
+	+ Added code base from CARLsim repo.
