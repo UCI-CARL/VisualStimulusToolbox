@@ -6,6 +6,10 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             new = copy(obj);
         end
         
+        function clear(obj)
+            obj.length = 0;
+            obj.stim = [];
+        end
         
         function addBlanks(obj, numBlanks, grayVal)
             if nargin<3,grayVal=0;end

@@ -75,6 +75,17 @@ classdef TestBaseStim < matlab.unittest.TestCase
             last = b.stim(:,:,:,end);
             testCase.verifyEqual(all(last(:)==gray), true)
         end
+        
+        function testClear(testCase)
+            % test whether clear function works
+            w=8;h=12;c=3;
+            b = BarStim([w h c]);
+            b.addBlanks(12);
+            b.clear();
+            testCase.verifyEqual(b.length, 0);
+            testCase.verifyEmpty(b.stim);
+        end
+
 
         
         function testPlus(testCase)
