@@ -6,15 +6,21 @@ classdef BarStim < BaseStim
             obj.channels = dimWHC(3);
             obj.length = 0;
             obj.stim = [];
+            
+            obj.baseMsgId = 'VisualStimulus:BarStim';
         end
         
         function setLength(obj, n)
             obj.length = n;
         end
-    
+        
         function plot(obj)
             disp('Plotting BarStim')
         end
+    end
+    
+    properties (GetAccess = protected)
+        baseMsgId;
     end
 end
     
