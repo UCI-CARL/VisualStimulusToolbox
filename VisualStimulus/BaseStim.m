@@ -11,6 +11,23 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             obj.stim = [];
         end
         
+        function plot(obj, frames)
+            if nargin<2,frames=1:obj.length;end
+            
+            for f=frames
+                imagesc(flipud(permute(obj.stim(:,:,:,f),[2 1 3 4])),[0 1])
+                if obj.channels == 1
+                    colormap gray
+                end
+                axis image
+                drawnow
+                pause(0.1)
+            end
+            waitforbuttonpress
+            close
+        end
+        
+        
         function addBlanks(obj, numBlanks, grayVal)
             if nargin<3,grayVal=0;end
             if ~isscalar(numBlanks) || ~isnumeric(numBlanks) || ...
@@ -39,8 +56,11 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             frames = ones(obj.width, obj.height, obj.channels, numBlanks);
             obj.addFrames(frames*grayVal);
         end
-        
-        function addFrames(obj, frames)
+    end
+    
+    %% Protected Methods
+    methods (Access = protected)
+        function appendFrames(obj, frames)
             %addFrames(obj, frames) adds a number of frames
             if size(frames,1) ~= obj.width || ...
                     size(frames,2) ~= obj.height || ...
@@ -59,13 +79,12 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
         end
     end
     
-    %% Protected Methods
-    methods (Access = protected)
-    end
-    
     %% Abstract Methods
     methods (Abstract)
-        plot(obj)
+    end
+    
+    methods (Abstract, Access = protected)
+        initDefaultParams(obj)
     end
     
     %% Properties
