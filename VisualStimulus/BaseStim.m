@@ -22,9 +22,11 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
                 axis image
                 drawnow
                 pause(0.1)
+                if f==frames(end)
+                    waitforbuttonpress
+                    close
+                end
             end
-            waitforbuttonpress
-            close
         end
         
         
