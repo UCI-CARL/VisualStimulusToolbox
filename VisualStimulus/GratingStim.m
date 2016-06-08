@@ -55,8 +55,7 @@ classdef GratingStim < BaseStim
     end
     
     methods (Access = protected)
-        function initDefaultParams(obj)
-            obj.length = 0;
+        function initDefaultParamsDerived(obj)
             obj.dir = 0;
             obj.freq = [0.1 0.1];
             obj.contrast = 1;
