@@ -99,6 +99,22 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             frames = ones(obj.width, obj.height, obj.channels, numBlanks);
             obj.addFrames(frames*grayVal);
         end
+        
+        function popFront(obj, numFrames)
+            % removes the first NUMFRAMES number of frames
+            obj.erase(1:numFrames);
+        end
+        
+        function popBack(obj, numFrames)
+            % removes the last NUMFRAMES number of frames
+            obj.erase(end-numFrames+1:end);
+        end
+        
+        function erase(obj, frames)
+            % removes either a single frame (position) or a range of FRAMES
+            obj.stim(:,:,:,frames) = [];
+            obj.length = size(obj.stim,4);
+        end
     end
     
     %% Protected Methods
