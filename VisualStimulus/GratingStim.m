@@ -61,11 +61,13 @@ classdef GratingStim < BaseStim
             obj.contrast = 1;
             obj.phase = 0;
             obj.baseMsgId = 'VisualStimulus:GratingStim';
+            obj.name = 'GratingStim';
         end
     end
 
-    properties (GetAccess = protected)
+    properties (Access = protected)
         baseMsgId;
+        name;
     end
     
     properties (Access = private)

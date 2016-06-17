@@ -257,11 +257,13 @@ classdef DotStim < BaseStim
             obj.densityStyle = 'random';
             obj.sampleFactor = 10;
             obj.interpMethod = 'linear';
-            obj.baseMsgId = 'VisualStimulus:GratingStim';
+            obj.baseMsgId = 'VisualStimulus:DotStim';
+            obj.name = 'DotStim';
         end
     end
     
-    properties (GetAccess = protected)
+    properties (Access = protected)
+        name;
         baseMsgId;
     end
     

@@ -125,11 +125,13 @@ classdef BarStim < BaseStim
             obj.startPos = 0;
             
             obj.baseMsgId = 'VisualStimulus:BarStim';
+            obj.name = 'BarStim';
         end
     end        
     
-    properties (GetAccess = protected)
+    properties (Access = protected)
         baseMsgId;
+        name;
     end
     
     properties (Access = private)

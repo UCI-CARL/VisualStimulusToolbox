@@ -94,11 +94,13 @@ classdef PlaidStim < BaseStim
             obj.plaidAngle = 120;
             obj.plaidContrast = 1;
             obj.baseMsgId = 'VisualStimulus:PlaidStim';
+            obj.name = 'PlaidStim';
         end
     end
     
-    properties (GetAccess = protected)
+    properties (Access = protected)
         baseMsgId;
+        name;
     end
     
     properties (Access = private)
