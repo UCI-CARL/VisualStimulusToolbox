@@ -9,7 +9,7 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             obj.length = 0;
             obj.stim = [];
         end
-                
+        
         function load(obj, fileName, loadHeaderOnly)
             if nargin<3,loadHeaderOnly=false;end
             fid = fopen(fileName,'r');
@@ -216,7 +216,8 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             disp([obj.baseMsgId ' - Created file "' fileName '".'])
         end
         
-        function addBlanks(obj, numBlanks, grayVal)
+        % TODO: needed? Make BlankStim?
+        function appendBlanks(obj, numBlanks, grayVal)
             if nargin<3,grayVal=0;end
             if ~isscalar(numBlanks) || ~isnumeric(numBlanks) || ...
                     (isnumeric(numBlanks) && mod(numBlanks,1)~=0)
@@ -243,6 +244,71 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             
             frames = ones(obj.width, obj.height, obj.channels, numBlanks);
             obj.addFrames(frames*grayVal);
+        end
+        
+        function addNoise(obj, type, frames, options)
+            if nargin<2,type='poisson';end
+            if nargin<3 || isempty(frames),frames=1:obj.length;end
+            if nargin<4,options={};end
+            
+%             options = options{:};
+            
+            for f=frames
+                frame = obj.stim(:,:,:,f);
+                
+                switch lower(type)
+                    case 'gaussian'
+                        valMean = 0;
+                        valVar = 0.01;
+                        if numel(options)>=1
+                            valMean=options{1};
+                            if ~isnumeric(valMean)
+                                error('Mean for Gaussian noise must be numeric')
+                            end
+                        end
+                        if numel(options)>=2
+                            valVar = options{2};
+                            if ~isnumeric(valVar)
+                                error('Variance for Gaussian noise must be numeric')
+                            end
+                        end
+                        noisy = imnoise(frame,'gaussian',valMean,valVar);
+                    case 'localvar'
+                        if numel(options)<1
+                            error('Must specify local variance of image')
+                        end
+                        if size(options{1}) ~= size(frame)
+                            error('Local variance must have same size as image')
+                        end
+                        noisy = imnoise(frame,'localvar',options{1});
+                    case 'poisson'
+                        noisy = imnoise(frame,'poisson');
+                    case 'salt & pepper'
+                        valD = 0.05;
+                        if numel(options)>=1
+                            valD=options{1};
+                            if ~isnumeric(valD)
+                                error(['Noise density for Salt & Pepper noise ' ...
+                                    'must be numeric'])
+                            end
+                        end
+                        noisy = imnoise(frame,'salt & pepper',valD);
+                    case 'speckle'
+                        valVar = 0.04;
+                        if numel(options)>=1
+                            valVar=options{1};
+                            if ~isnumeric(valVar)
+                                error('Variance for Speckle noise must be numeric')
+                            end
+                        end
+                        noisy = imnoise(frame,'speckle',valVar);
+                    otherwise
+                        error(['Unknown noise type "' type '". Currently ' ...
+                            'supported are: ' obj.supportedNoiseTypes])
+                end
+                
+                obj.stim(:,:,:,f) = noisy;
+            end
         end
         
         function popFront(obj, numFrames)
@@ -274,6 +340,13 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             obj.channels = 1;
             disp([obj.baseMsgId ' - Stimulus successfully converted ' ...
                 'to grayscale.'])
+        end
+        
+        function resize(obj, dim)
+            assert(numel(dim)<=2)
+            obj.stim = imresize(obj.stim, dim);
+            obj.height = size(obj.stim, 1);
+            obj.width = size(obj.stim, 2);
         end
     end
     
@@ -332,6 +405,10 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             obj.plotStepBW = false;
             
             obj.interactiveMode = true;
+
+            % the following noise types are supported
+            obj.supportedNoiseTypes = {'gaussian', 'localvar', ...
+                'poisson', 'salt & pepper', 'speckle'};
                         
             % then initialize all parameters of derived class
             obj.initDefaultParamsDerived();
@@ -388,6 +465,8 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
         plotStepBW;         % flag whether to make a step backward
         
         interactiveMode;
+        
+        supportedNoiseTypes;
     end
     
     properties (SetAccess = private, GetAccess = protected)
