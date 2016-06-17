@@ -1,12 +1,12 @@
 classdef DotStim < BaseStim
     methods (Access = public)
-        function obj = DotStim(dimWHC, length, dotDirection, dotSpeed, ...
+        function obj = DotStim(dimHWC, length, dotDirection, dotSpeed, ...
                 dotDensity, dotCoherence, dotRadius, ptCenter, ...
                 densityStyle)
-            obj.width = dimWHC(1);
-            obj.height = dimWHC(2);
-            if numel(dimWHC) > 2
-                obj.channels = dimWHC(3);
+            obj.height = dimHWC(1);
+            obj.width = dimHWC(2);
+            if numel(dimHWC) > 2
+                obj.channels = dimHWC(3);
             else
                 obj.channels = 1;
             end
@@ -14,7 +14,6 @@ classdef DotStim < BaseStim
             
             % needs width/height
             obj.initDefaultParams();
-            
             
             if nargin >= 2
                 if nargin<3,dotDirection=obj.dotDirection;end
@@ -242,7 +241,7 @@ classdef DotStim < BaseStim
             
             % use append method from base class to append frames
             % TODO generalize to 3 channels
-            frames(:,:,1,:) = permute(res, [2 1 3]);
+            frames(:,:,1,:) = res;%permute(res, [2 1 3]);
             obj.appendFrames(frames);
         end
     end

@@ -1,18 +1,18 @@
 classdef GratingStim < BaseStim
     methods (Access = public)
-        function obj = GratingStim(dimWHC, length, dir, freq, contrast, ...
+        function obj = GratingStim(dimHWC, length, dir, freq, contrast, ...
                 phase)
-            obj.initDefaultParams();
-
-            obj.width = dimWHC(1);
-            obj.height = dimWHC(2);
-            if numel(dimWHC) > 2
-                obj.channels = dimWHC(3);
+            obj.height = dimHWC(1);
+            obj.width = dimHWC(2);
+            if numel(dimHWC) > 2
+                obj.channels = dimHWC(3);
             else
                 obj.channels = 1;
             end
             assert(obj.channels == 1)
-            
+
+            obj.initDefaultParams();
+
             if nargin >= 2
                 if nargin<3,dir=obj.dir;end
                 if nargin<4,freq=obj.freq;end
@@ -41,15 +41,15 @@ classdef GratingStim < BaseStim
             t = 0:length-1;
             [x,y,t] = ndgrid(x,y,t);
             
-            sinGrating = cos(2*pi*freq(1)*cos(dir).*x ...
-                + 2*pi*freq(1)*sin(dir).*y ...
+            sinGrating = cos(2*pi*freq(1)*cos(dir/180*pi).*x ...
+                + 2*pi*freq(1)*sin(dir/180*pi).*y ...
                 - 2*pi*freq(2).*t ...
                 + 2*pi*phase);
             sinGrating = contr.*sinGrating/2 + 0.5;
             
             % use append method from base class to append frames
             % TODO generalize to 3 channels
-            frames(:,:,1,:) = sinGrating;
+            frames(:,:,1,:) = permute(sinGrating, [2 1 3]);
             obj.appendFrames(frames);
         end
     end

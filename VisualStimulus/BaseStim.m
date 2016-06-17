@@ -30,8 +30,7 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
                 end
                 
                 % display frame
-                imagesc(flipud(permute(obj.stim(:,:,:,frames(idx)), ...
-                    [2 1 3 4])),[0 1])
+                imagesc(flipud(obj.stim(:,:,:,frames(idx))), [0 1])
                 if obj.channels == 1
                     colormap gray
                 end
@@ -106,11 +105,11 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
     methods (Access = protected)
         function appendFrames(obj, frames)
             %addFrames(obj, frames) adds a number of frames
-            if size(frames,1) ~= obj.width || ...
-                    size(frames,2) ~= obj.height || ...
+            if size(frames,1) ~= obj.height || ...
+                    size(frames,2) ~= obj.width || ...
                     size(frames,3) ~= obj.channels
                 msgId = [obj.baseMsgId ':dimensionMismatch'];
-                msg = ['frames must be of size width x height x ' ...
+                msg = ['frames must be of size height x width x ' ...
                     'channels x number frames'];
                 error(msgId, msg)
             end
@@ -123,6 +122,10 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
         end
         
         function initDefaultParams(obj)
+            % needs width/height
+            assert(~isempty(obj.width))
+            assert(~isempty(obj.height))
+            
             % initialize protected properties
             obj.length = 0;
             obj.plotAbort = false;
