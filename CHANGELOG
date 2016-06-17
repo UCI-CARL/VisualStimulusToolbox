@@ -10,6 +10,7 @@ Release 1.0
 2016-06-16  Michael Beyeler <mbeyeler@uci.edu>
  + Add recording function.
  + Add save-to-file function.
+ + Add PictureStim and MovieStim.
 
 2016-06-08  Michael Beyeler <mbeyeler@uci.edu>
  + Add interactive plot mode for stepping forward/backward through frames.

@@ -9,10 +9,119 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             obj.length = 0;
             obj.stim = [];
         end
+                
+        function load(obj, fileName, loadHeaderOnly)
+            if nargin<3,loadHeaderOnly=false;end
+            fid = fopen(fileName,'r');
+            if fid == -1
+                error(['Could not open "' fileName ...
+                    '" with read permission.']);
+            end
+            
+            % read signature
+            sign = fread(fid, 1, 'int');
+            if sign ~= obj.fileSignature
+                error('Unknown file type: Could not read file signature')
+            end
+            
+            % read version number
+            ver = fread(fid, 1, 'float');
+            if (ver ~= obj.version)
+                error(['Unknown file version, must have Version ' ...
+                    num2str(obj.version) ' (Version ' ...
+                    num2str(ver) ' found)'])
+            end
+            
+            % read number of channels
+            obj.channels = fread(fid, 1, 'int8');
+            
+            % read stimulus dimensions
+            obj.width = fread(fid, 1, 'int');
+            obj.height = fread(fid, 1, 'int');
+            obj.length = fread(fid, 1, 'int');
+            
+            % don't read stimulus if this flag is set
+            if loadHeaderOnly
+                return
+            end
+            
+            % read stimulus
+            obj.stim = fread(fid, 'uchar')/255;
+            fclose(fid);
+            
+            % make sure dimensions match up
+            dim = obj.width*obj.height*obj.length*obj.channels;
+            if size(obj.stim,1) ~= dim
+                error(['Error during reading of file "' fileName '". ' ...
+                    'Expected width*height*length = ' ...
+                    num2str(obj.privSizeOf()) ...
+                    'elements, found ' num2str(numel(obj.stim))])
+            end
+            
+            if ~obj.width || ~obj.height || ~obj.channels || ...
+                    ~obj.length
+                error('Stimulus is empty.')
+            end
+            
+            % reshape
+            obj.stim = reshape(obj.stim, obj.height, obj.width, ...
+                obj.channels, obj.length);
+            disp([obj.baseMsgId ' - Successfully loaded stimulus from ' ...
+                'file "' fileName '".'])
+        end            
+        
+        function save(obj, fileName)
+            if nargin<2,fileName=[obj.name '.dat'];end
+            fid = fopen(fileName,'w');
+            if fid == -1
+                error(['Could not open "' fileName ...
+                    '" with write permission.']);
+            end
+            
+            if obj.length == 0
+                error('Stimulus is empty. Nothing to save.')
+            end
+            
+            % check whether fwrite is successful
+            wrErr = false;
+            
+            % start with file signature
+            sign = obj.fileSignature; % some random number
+            cnt=fwrite(fid,sign,'int');           wrErr = wrErr | (cnt~=1);
+            
+            % include version number
+            cnt=fwrite(fid,obj.version,'float');  wrErr = wrErr | (cnt~=1);
+            
+            % include number of channels (1 for GRAY, 3 for RGB)
+            cnt=fwrite(fid,obj.channels,'int8');  wrErr = wrErr | (cnt~=1);
+            
+            % specify width, height, length
+            cnt=fwrite(fid,obj.width,'int');      wrErr = wrErr | (cnt~=1);
+            cnt=fwrite(fid,obj.height,'int');     wrErr = wrErr | (cnt~=1);
+            cnt=fwrite(fid,obj.length,'int');     wrErr = wrErr | (cnt~=1);
+            
+            % read stimulus
+            cnt=fwrite(fid,obj.stim*255,'uchar');
+            wrErr = wrErr | (cnt~=obj.width*obj.height*obj.length*obj.channels);
+            
+            % if there has been an error along the way, inform user
+            if wrErr
+                error(['Error during writing to file "' fileName '"'])
+            end
+            
+            fclose(fid);
+            disp([obj.baseMsgId ' - Successfully saved stimulus to ' ...
+                'file "' fileName '".'])
+        end
         
         function plot(obj, frames, steppingMode)
             if nargin<2 || isempty(frames),frames=1:obj.length;end
             if nargin<3,steppingMode=false;end
+            
+            if ~numel(frames)
+                disp([obj.baseMsgId ' - Nothing to plot.'])
+                return
+            end
 
             % reset abort flag, set up callback for key press events
             if obj.interactiveMode
@@ -21,7 +130,6 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
                 set(gcf,'KeyPressFcn',@obj.pauseOnKeyPressCallback)
             end
             
-            numel(frames)
             % display frame in specified axes
             % use a while loop instead of a for loop so that we can
             % implement stepping backward
@@ -77,105 +185,13 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             end
         end
         
-        function load(obj, fileName, loadHeaderOnly)
-            if nargin<3,loadHeaderOnly=false;end
-            fid = fopen(fileName,'r');
-            if fid == -1
-                error(['Could not open "' fileName ...
-                    '" with read permission.']);
-            end
-            
-            % read signature
-            sign = fread(fid, 1, 'int');
-            if sign ~= obj.fileSignature
-                error('Unknown file type: Could not read file signature')
-            end
-            
-            % read version number
-            ver = fread(fid, 1, 'float');
-            if (ver ~= obj.version)
-                error(['Unknown file version, must have Version ' ...
-                    num2str(obj.version) ' (Version ' ...
-                    num2str(ver) ' found)'])
-            end
-            
-            % read number of channels
-            obj.channels = fread(fid, 1, 'int8');
-            
-            % read stimulus dimensions
-            obj.width = fread(fid, 1, 'int');
-            obj.height = fread(fid, 1, 'int');
-            obj.length = fread(fid, 1, 'int');
-            
-            % don't read stimulus if this flag is set
-            if loadHeaderOnly
-                return
-            end
-            
-            % read stimulus
-            obj.stim = fread(fid, 'uchar')/255;
-            fclose(fid);
-            
-            % make sure dimensions match up
-            dim = obj.width*obj.height*obj.length*obj.channels;
-            if size(obj.stim,1) ~= dim
-                error(['Error during reading of file "' fileName '". ' ...
-                    'Expected width*height*length = ' ...
-                    num2str(obj.privSizeOf()) ...
-                    'elements, found ' num2str(numel(obj.stim))])
-            end
-            
-            % reshape
-            obj.stim = reshape(obj.stim, obj.height, obj.width, ...
-                obj.channels, obj.length);
-            disp(['Successfully loaded stimulus from file "' fileName '"'])
-        end            
-        
-        function save(obj, fileName)
-            if nargin<2,fileName=[obj.name '.dat'];end
-            fid = fopen(fileName,'w');
-            if fid == -1
-                error(['Could not open "' fileName ...
-                    '" with write permission.']);
-            end
-            if obj.width<0 || obj.height<0 || obj.length<0
-                error('Stimulus width/height/length not set.');
-            end
-            
-            % check whether fwrite is successful
-            wrErr = false;
-            
-            % start with file signature
-            sign = obj.fileSignature; % some random number
-            cnt=fwrite(fid,sign,'int');           wrErr = wrErr | (cnt~=1);
-            
-            % include version number
-            cnt=fwrite(fid,obj.version,'float');  wrErr = wrErr | (cnt~=1);
-            
-            % include number of channels (1 for GRAY, 3 for RGB)
-            cnt=fwrite(fid,obj.channels,'int8');  wrErr = wrErr | (cnt~=1);
-            
-            % specify width, height, length
-            cnt=fwrite(fid,obj.width,'int');      wrErr = wrErr | (cnt~=1);
-            cnt=fwrite(fid,obj.height,'int');     wrErr = wrErr | (cnt~=1);
-            cnt=fwrite(fid,obj.length,'int');     wrErr = wrErr | (cnt~=1);
-            
-            % read stimulus
-            cnt=fwrite(fid,obj.stim*255,'uchar');
-            wrErr = wrErr | (cnt~=obj.width*obj.height*obj.length*obj.channels);
-            
-            % if there has been an error along the way, inform user
-            if wrErr
-                error(['Error during writing to file "' fileName '"'])
-            end
-            
-            fclose(fid);
-            disp(['Successfully saved stimulus to file "' fileName '"'])
-        end
-        
         function record(obj, fileName, fps)
             if nargin<3,fps=5;end
             if nargin<2,fileName='movie.avi';end
+            
+            if obj.length == 0
+                error('Stimulus is empty. Can''t record.')
+            end
             
             % display frames in specified axes
             set(gcf,'color','white');
@@ -197,7 +213,7 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             obj.interactiveMode = true;
             close(gcf)
             close(vidObj);
-            disp(['created file "' fileName '"'])
+            disp([obj.baseMsgId ' - Created file "' fileName '".'])
         end
         
         function addBlanks(obj, numBlanks, grayVal)
@@ -243,6 +259,21 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             % removes either a single frame (position) or a range of FRAMES
             obj.stim(:,:,:,frames) = [];
             obj.length = size(obj.stim,4);
+            
+            disp([obj.baseMsgId ' - Erased frames [' num2str(frames) ']'])
+        end
+        
+        function rgb2gray(obj)
+            if obj.channels == 1
+                warning('Stimulus is already grayscale.')
+                return
+            end
+            
+            assert(obj.channels == 3)
+            obj.stim = mean(obj.stim, 3);
+            obj.channels = 1;
+            disp([obj.baseMsgId ' - Stimulus successfully converted ' ...
+                'to grayscale.'])
         end
     end
     
