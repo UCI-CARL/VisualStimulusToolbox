@@ -137,65 +137,6 @@ at a later point:
 >> assert(all(oldStim(:) == newDot.stim(:)))
 ```
 
-A stimulus can also be loaded using the C++ interface.
-
-
-## C++ Interface
-
-The C++ interface was primarily designed to provide an easy access point
-for [CARLsim](http://www.socsci.uci.edu/~jkrichma/CARLsim), a spiking
-neural network simulator developed in our lab.
-Currently, the interface can be used to load stimuli created with MATLAB.
-
-
-#### Installation
-
-In Unix, open a terminal and type:
-```
-$ cd cpp
-$ make
-$ sudo make install
-```
-
-
-#### Loading Your First Stimulus
-
-After you have created a stimulus in MATLAB and saved it to (e.g.)
-`myBinaryStim.dat`, create a file called `main.cpp`:
-
-```C++
-#include <visual_stimulus.h>
-#include <vector>
-
-int main() {
-	// instantiate object
-	VisualStimulus dot("myBinaryStim.dat");
-
-	// retrieve stimulus dimensions
-	int width = dot.getStimulusWidth();
-	int height = dot.getStimulusHeight();
-	int channels = dot.getStimulusChannels();
-	int length = dot.getStimulusLength();
-
-	// scale values to range [0 255.0f]
-	float minVal = 0.0f;
-	float maxVal = 255.0f;
-
-	// read frames one-by-one
-	for (int f=0; f<length; f++) {
-		std::vector<float> frame = dot.readFrame(minVal, maxVal);
-	}
-
-	return 0;
-}
-```
-
-The file can be compiled and run via:
-```
-$ g++ -I/usr/local/include/visual_stimulus main.cpp -lVisualStimulus -o main
-$ ./main
-```
-
 
 ## Acknowledgment
 Some of this code is based on scripts initially authored by Timothy Saint
