@@ -1,9 +1,23 @@
 VisualStimulusToolbox
 =====================
 
-**VisualStimulusToolbox** is a MATLAB toolbox for generating, storing,
-and plotting 2D visual stimuli commonly used in neuroscience,
+**VisualStimulusToolbox** is a lightweight MATLAB toolbox for generating, storing,
+and plotting 2D visual stimuli commonly used in vision and neuroscience research,
 such as sinusoidal gratings, plaids, random dot fields, and noise.
+
+The toolbox allows for the easy creation, manipulation, plotting, and storing of visual stimuli such as drifting sinusoidal gratings, drifting plaids, drifting bars, random dot clouds, as well as their combinations. Every stimulus can be plotted, recorded to AVI, and stored to binary.
+
+<div align="center">
+  <img src="http://uci-carl.github.io/VisualStimulusToolbox/img/visualstimulus.jpg" style="width: 90%">
+</div>
+
+VisualStimulusToolbox was originally created to provide an easy way to important visual stimuli to the 
+[CARLsim](http://www.socsci.uci.edu/~jkrichma/CARLsim) spiking network simulator. 
+As of CARLsim 3.0, it is straightforward to convert VisualStimulus .dat files to spike trains that can serve
+as input to CARLsim simulations. However, the toolbox can be used independently.
+
+The toolbox is a lightweight alternative to the more comprehensive 
+[Psychophysics](http://psychtoolbox.org) toolbox.
 
 We use
 [GitHub issues](https://github.com/UCI-CARL/VisualStimulusToolbox/issues)
@@ -58,7 +72,6 @@ A stimulus is intantiated by passing the desired stimulus [height, width]
                  length: 0
                    stim: []
     supportedNoiseTypes: {'gaussian'  'localvar'  'poisson'  'salt & pepper'  'speckle'}
-stimulus (in pixels)
 ```
 
 Frames can then be added using the method `add`, by specifying drift
