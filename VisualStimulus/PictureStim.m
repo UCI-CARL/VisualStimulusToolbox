@@ -10,6 +10,8 @@ classdef PictureStim < BaseStim
             end
             
             img = double(flipud(imread(fileName))) / 255;
+			size(img)
+			
             obj.height = size(img, 1);
             obj.width = size(img, 2);
             obj.channels = size(img, 3);

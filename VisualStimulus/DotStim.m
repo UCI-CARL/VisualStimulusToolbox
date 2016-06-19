@@ -1,8 +1,7 @@
 classdef DotStim < BaseStim
     methods (Access = public)
         function obj = DotStim(dimHWC, length, dotDirection, dotSpeed, ...
-                dotDensity, dotCoherence, dotRadius, ptCenter, ...
-                densityStyle)
+                dotDensity, dotCoherence, dotRadius)
 			if nargin==0,dimHWC=[0 0 1];end
 			
             obj.height = dimHWC(1);
@@ -23,12 +22,10 @@ classdef DotStim < BaseStim
                 if nargin<5,dotDensity=obj.dotDensity;end
                 if nargin<6,dotCoherence=obj.dotCoherence;end
                 if nargin<7,dotRadius=obj.dotRadius;end
-                if nargin<8,ptCenter=obj.ptCenter;end
-                if nargin<9,densityStyle=obj.densityStyle;end
                 
                 % shortcut to create and add
-                obj.add(length, dir, dotDirection, dotSpeed, dotDensity,...
-                    dotCoherence, dotRadius, ptCenter, densityStyle);
+                obj.add(length, dotDirection, dotSpeed, dotDensity,...
+                    dotCoherence, dotRadius);
             end
         end
         

@@ -23,7 +23,7 @@ classdef BarStim < BaseStim
                 if nargin<8,startPos=obj.startPos;end
 
                 % shortcut to create and add
-                obj.add(length, dir, direction, speed, barWidth, ...
+                obj.add(length, direction, speed, barWidth, ...
                     edgeWidth, pxBtwBars, startPos);
             end
         end

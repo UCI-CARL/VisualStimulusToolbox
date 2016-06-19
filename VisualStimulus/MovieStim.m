@@ -19,11 +19,15 @@ classdef MovieStim < BaseStim
             end
             
             obj.initDefaultParams()
-            
+			
+			if ismember('hasFrame', methods('VideoReader'))
             while hasFrame(vidObj)
                 frame = double(flipud(readFrame(vidObj))) / 255;
                 obj.appendFrames(frame)
-            end
+			end
+			else
+				obj.appendFrames(double(flipud(read(vidObj)))/255);
+			end
         end
     end
     
