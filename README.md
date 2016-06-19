@@ -1,4 +1,208 @@
 VisualStimulusToolbox
 =====================
 
-A Matlab toolbox for generating, storing, and plotting 2D visual stimuli such as sinusoidal gratings, plaids, random dot fields, and noise.
+**VisualStimulusToolbox** is a MATLAB toolbox for generating, storing,
+and plotting 2D visual stimuli commonly used in neuroscience,
+such as sinusoidal gratings, plaids, random dot fields, and noise.
+
+We use
+[GitHub issues](https://github.com/UCI-CARL/VisualStimulusToolbox/issues)
+for tracking requests and bugs.
+
+
+## Installation
+
+You can view and manage installed add-ons in MATLAB R2016a using the 
+[Add-On Manager](http://www.mathworks.com/help/matlab/matlab_env/manage-your-add-ons.html).
+To open the Add-On Manager, go to the **Home** tab, and select 
+**Add-Ons** > **Manage Add-Ons**.
+
+In older MATLAB versions, simply add the directory
+**VisualStimulus/VisualStimulusToolbox** to your
+[MATLAB path ](http://www.mathworks.com/help/matlab/ref/pathtool.html),
+and you are good to go.
+
+<div align="center">
+<img src="http://www.mathworks.com/help/matlab/ref/set_path.png" alt="MATLAB pathtool" title="MATLAB pathool" width="60%"/>
+</div>
+
+
+## Getting Started
+
+VisualStimulusToolbox provides a number of classes for creating, plotting,
+and storing visual stimuli such as:
+* `DotStim`: field of randomly drifting dots
+* `GratingStim`: drifting sinusoidal grating
+* `PlaidStim`: drifting plaid stimulus (composed of two sinusoidal gratings)
+* `BarStim`: drifting bar stimulus
+* `PictureStim`: stimulus made from a picture (BMP, CUR, GIF, HDF, ICO, 
+  JPEG, PBM, PCX, PGM, PNG, PPM, RAS, TIFF, XWD)
+* `VideoStim`: stimulus made from a movie (AVI, MPG, MP4, M4V, MOV, WMV,
+   MJ2, ASF, ASX)
+* `CompoundStim`: stimulus made from a mixture of stimulus types listed
+  above
+
+
+#### Creating Your First Stimulus
+
+A stimulus is intantiated by passing the desired stimulus [height, width]
+(in pixels) to the constructor:
+
+```Matlab
+>> dot = DotStim([120 160])
+  DotStim with properties:
+
+                  width: 160
+                 height: 120
+               channels: 1
+                 length: 0
+                   stim: []
+    supportedNoiseTypes: {'gaussian'  'localvar'  'poisson'  'salt & pepper'  'speckle'}
+stimulus (in pixels)
+```
+
+Frames can then be added using the method `add`, by specifying drift
+direction (in degrees) and speed (in pixels/frame) as well as some other
+stimulus-specific options (e.g., dot density, dot coherence, dot size,
+etc.):
+
+```Matlab
+>> numFrames = 10;
+>> dotSpeed = 1;
+>> for dirDeg=(0:7)*45
+	   dot.add(numFrames, dirDeg, dotSpeed);
+   end
+>> dot.plot;
+```
+
+This will create a stimulus made of a total of 80 frames, where dots drift
+into one of eight directions (in 45 degree increments) for 10 frames each.
+
+During plotting, key events can be used to pause, stop, and step through
+the frames.
+* Pressing `p` will pause plotting until another key is pressed.
+* Pressing `s` will enter stepping mode, where the succeeding frame can be
+  reached by pressing the right-arrow key, and the preceding frame can be
+  reached by pressing the left-arrow key.
+  Pressing `s` again will exit stepping mode.
+* Pressing `q` will exit plotting.
+
+Internally, the stimulus is stored as a 4D array
+<height x width x channels x frames>.
+For example, grayscale stimuli have one channel, and RGB stimuli have
+three channels. The raw data array can also be accessed directly:
+```Matlab
+>> rawData4D = dot.stim;
+```
+
+A stimulus can also be converted to an AVI movie or stored as a binary
+file (see below).
+
+
+#### Manipulating an Existing Stimulus
+
+Every stimulus type also comes with a number of handy helper methods:
+* `clear`: Deletes all frames.
+* `erase`: Deletes either a single frame or a list of frames.
+* `popFront`: Deletes the first frame.
+* `popBack`: Deletes the last frame.
+* `rgb2gray`: Converts an RGB stimulus to a grayscale stimulus.
+* `resize`: Resizes all frames by specifying either a scaling factor or
+   a desired [height, width].
+* `appendBlanks`: Appends blank frames of a given grayscale value. 
+* `addNoise`: Adds noise to all existing frames. Supported noise types are
+  given by variable `supportedNoiseTypes` and currently includes Gaussian
+  noise with constant mean, Gaussian white noise, Poisson noise, Salt &
+  Pepper noise, and speckle (multiplicative) noise.
+
+
+#### Recording AVI
+
+Every stimulus type can be converted to an AVI movie using the `record`
+method by specifying a desired file name and frame rate:
+```Matlab
+>> dot.record('myMovie.avi', 10); % 10 frames per second
+```
+
+
+#### Saving / Loading
+
+Every stimulus type can be stored to a binary file, which can be loaded
+at a later point:
+```Matlab
+>> dot.save('myBinaryStim.dat');
+>> oldStim = dot.length;
+>> newDot = DotStim;
+>> newDot.load('myBinaryStim.dat');
+>> assert(all(oldStim(:) == newDot.stim(:)))
+```
+
+A stimulus can also be loaded using the C++ interface.
+
+
+## C++ Interface
+
+The C++ interface was primarily designed to provide an easy access point
+for [CARLsim](http://www.socsci.uci.edu/~jkrichma/CARLsim), a spiking
+neural network simulator developed in our lab.
+Currently, the interface can be used to load stimuli created with MATLAB.
+
+
+#### Installation
+
+In Unix, open a terminal and type:
+```
+$ cd cpp
+$ make
+$ sudo make install
+```
+
+
+#### Loading Your First Stimulus
+
+After you have created a stimulus in MATLAB and saved it to (e.g.)
+`myBinaryStim.dat`, create a file called `main.cpp`:
+
+```C++
+#include <visual_stimulus.h>
+#include <vector>
+
+int main() {
+	// instantiate object
+	VisualStimulus dot("myBinaryStim.dat");
+
+	// retrieve stimulus dimensions
+	int width = dot.getStimulusWidth();
+	int height = dot.getStimulusHeight();
+	int channels = dot.getStimulusChannels();
+	int length = dot.getStimulusLength();
+
+	// scale values to range [0 255.0f]
+	float minVal = 0.0f;
+	float maxVal = 255.0f;
+
+	// read frames one-by-one
+	for (int f=0; f<length; f++) {
+		std::vector<float> frame = dot.readFrame(minVal, maxVal);
+	}
+
+	return 0;
+}
+```
+
+The file can be compiled and run via:
+```
+$ g++ -I/usr/local/include/visual_stimulus main.cpp -lVisualStimulus -o main
+$ ./main
+```
+
+
+## Acknowledgment
+Some of this code is based on scripts initially authored by Timothy Saint
+<saint@ncs.nyu.edu> and Eero P. Simoncelli <eero.simoncelli@nyu.edu>
+at NYU.
+
+These scripts were released as part of the
+[Motion Energy model](http://www.cns.nyu.edu/~lcv/MTmodel) in 2005,
+which was released without stating any software license restrictions.
+Their contributions are attributed at relevant places in the source code.

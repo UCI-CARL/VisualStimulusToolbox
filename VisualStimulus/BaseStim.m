@@ -458,23 +458,24 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
         channels;           % number of channels (gray=1, RGB=3)
         length;             % stimulus length (number of frames)
         stim;               % 3-D matrix width-by-height-by-length
-        
+        supportedNoiseTypes;
+	end
+	
+	properties (Hidden, Access = protected)
         plotAbort;          % flag whether to abort plotting (on-click)
         plotStepMode;       % flag whether to waitforbuttonpress btw frames
         plotStepFW;         % flag whether to make a step forward
         plotStepBW;         % flag whether to make a step backward
         
         interactiveMode;
-        
-        supportedNoiseTypes;
     end
     
-    properties (SetAccess = private, GetAccess = protected)
+    properties (Hidden, SetAccess = private, GetAccess = protected)
         version;
         fileSignature;
     end
     
-    properties (Abstract, Access = protected)
+    properties (Hidden, Abstract, Access = protected)
         baseMsgId;
         name;
     end

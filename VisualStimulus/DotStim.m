@@ -3,6 +3,8 @@ classdef DotStim < BaseStim
         function obj = DotStim(dimHWC, length, dotDirection, dotSpeed, ...
                 dotDensity, dotCoherence, dotRadius, ptCenter, ...
                 densityStyle)
+			if nargin==0,dimHWC=[0 0 1];end
+			
             obj.height = dimHWC(1);
             obj.width = dimHWC(2);
             if numel(dimHWC) > 2
@@ -262,12 +264,12 @@ classdef DotStim < BaseStim
         end
     end
     
-    properties (Access = protected)
+    properties (Hidden, Access = protected)
         name;
         baseMsgId;
     end
     
-    properties (Access = private)
+    properties (Hidden, Access = private)
         dotDirection;
         dotSpeed;
         dotDensity;
