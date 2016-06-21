@@ -64,6 +64,7 @@ classdef GratingStim < BaseStim
 			else
 				obj.channels = 3;
 			end
+			obj.colorChar = colorChar;
 			obj.colorVec = obj.char2rgb(colorChar);
 
 			% optionally, create stimulus in the same line of code
@@ -74,26 +75,25 @@ classdef GratingStim < BaseStim
                 if nargin<7,phase=obj.phase;end
                 
 				validateattributes(length, {'numeric'}, ...
-					{'integer','nonnegative'}, 'add', 'length')
+					{'integer','nonnegative'}, 'GratingStim', 'length')
 				validateattributes(dir, {'numeric'}, ...
-					{'real','>=',0,'<=',360}, 'add', 'dir')
+					{'real','>=',0,'<=',360}, 'GratingStim', 'dir')
 				validateattributes(freq, {'numeric'}, ...
-					{'vector', 'real', 'nonnegative'}, 'add', 'freq')
-				validateattributes(contr, {'numeric'}, ...
-					{'real','>',0,'<=',1}, 'add', 'contr')
-				validateattributes(contr, {'numeric'}, {'real'}, 'add', ...
-					'contr')
+					{'vector', 'real', 'nonnegative'}, 'GratingStim', ...
+					'freq')
+				validateattributes(contrast, {'numeric'}, ...
+					{'real','>',0,'<=',1}, 'GratingStim', 'contr')
 				
 				% shortcut to create and add
                 obj.add(length, dir, freq, contrast, phase);
             end
         end
         
-        function add(obj, length, dir, freq, contr, phase)
-			% grating.add(length, dir, freq, contr, phase) appends LENGTH
-			% frames of a drifting sinusoidal grating to the existing
-			% stimulus, where the grating drifts into direction DIR
-			% (between 0 and 360 degrees); with FREQ a 1-by-2 vector
+        function add(obj, length, dir, freq, contrast, phase)
+			% grating.add(length, dir, freq, contrast, phase) appends
+			% LENGTH frames of a drifting sinusoidal grating to the
+			% existing stimulus, where the grating drifts into direction
+			% DIR (between 0 and 360 degrees); with FREQ a 1-by-2 vector
 			% [spatFreq tempFreq] indicating spatial and temporal frequency
 			% of the grating, CONTRAST indicating stimulus contrast between
 			% 0 and 1, and PHASE indicating the initial phase of the 
@@ -108,10 +108,6 @@ classdef GratingStim < BaseStim
 			%
 			% DIMHW      - 1-by-2 stimulus dimensions: [height width].
 			%              Default: [0 0].
-			% COLORCHAR  - ColorSpec: 'k' (black), 'b' (blue), 'g' (green),
-			%              'c' (cyan), 'r' (red), 'm' (magenta), 'y' 
-			%              (yellow), and 'w' (white).
-			%              Default: 'w'.
 			% LENGTH     - Number of frames to create.
 			%              Default: 0.
 			% DIR        - Drifting directions in degrees (where
@@ -128,7 +124,7 @@ classdef GratingStim < BaseStim
 			%              Default: 0.
             if nargin<3,dir=obj.dir;end
             if nargin<4,freq=obj.freq;end
-            if nargin<5,contr=obj.contrast;end
+            if nargin<5,contrast=obj.contrast;end
             if nargin<6,phase=obj.phase;end
 			
 			if obj.height == 0 || obj.width == 0
@@ -143,9 +139,9 @@ classdef GratingStim < BaseStim
                 {'real','>=',0,'<=',360}, 'add', 'dir')
 			validateattributes(freq, {'numeric'}, ...
 				{'vector', 'real', 'nonnegative'}, 'add', 'freq')
-			validateattributes(contr, {'numeric'}, ...
+			validateattributes(contrast, {'numeric'}, ...
 				{'real','>',0,'<=',1}, 'add', 'contr')
-			validateattributes(contr, {'numeric'}, {'real'}, 'add', ...
+			validateattributes(contrast, {'numeric'}, {'real'}, 'add', ...
 				'contr')
             
             % create rectangular 3D grid
@@ -159,8 +155,7 @@ classdef GratingStim < BaseStim
                 + 2*pi*freq(1)*sin(dir/180*pi).*y ...
                 - 2*pi*freq(2).*t ...
                 + 2*pi*phase);
-            channel = contr.*channel/2 + 0.5;
-			channel = min(1, max(0, channel));
+            channel = contrast.*channel/2 + 0.5;
 			
 			% flip X and Y
 			channel = permute(channel, [2 1 3]);
@@ -181,6 +176,8 @@ classdef GratingStim < BaseStim
 					sinGrating(:,:,c,:) = channel * obj.colorVec(c);
 				end
 			end
+			
+			sinGrating = min(1, max(0, sinGrating));
             
             % use append method from base class to append frames
             obj.appendFrames(sinGrating);
@@ -199,7 +196,8 @@ classdef GratingStim < BaseStim
             obj.baseMsgId = 'VisualStimulus:GratingStim';
             obj.name = 'GratingStim';
 			obj.stimType = eval(['obj.supportedStimTypes.' obj.name]);
-			obj.colorVec = [1 1 1];
+			obj.colorChar = 'w';
+			obj.colorVec = obj.char2rgb(obj.colorChar);
         end
 	end
 
@@ -207,6 +205,7 @@ classdef GratingStim < BaseStim
     properties (Access = protected)
         baseMsgId;          % string prepended to error messages
         name;               % string describing the stimulus type
+		colorChar;          % single-character specifying stimulus color
 		colorVec;           % 3-element vector specifying stimulus color
 		stimType;           % integer from obj.supportedStimTypes
     end

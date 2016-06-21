@@ -8,8 +8,8 @@ Release 1.0
 ===========================================================================
 
 2016-06-21  Michael Beyeler <mbeyeler@uci.edu>
- + Add color option to GratingStim.
- * Finish GratingStim documentation.
+ + Add color option to GratingStim and PlaidStim.
+ * Extend source code documentation.
 
 2016-06-16  Michael Beyeler <mbeyeler@uci.edu>
  + Add recording function for storing stimuli as AVI files.

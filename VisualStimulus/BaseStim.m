@@ -26,6 +26,10 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
         
         function load(obj, fileName, loadHeaderOnly)
             if nargin<3,loadHeaderOnly=false;end
+			
+			% reset stimulus
+			obj.clear();
+			
             fid = fopen(fileName,'r');
             if fid == -1
                 error(['Could not open "' fileName ...
@@ -531,6 +535,7 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
     properties (Hidden, Abstract, Access = protected)
         baseMsgId;          % string prepended to error messages
         name;               % string describing the stimulus type
+		colorChar;          % single-character specifying stimulus color
 		colorVec;           % 3-element vector specifying stimulus color
 		stimType;           % integer from obj.supportedStimTypes
     end
