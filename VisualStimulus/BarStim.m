@@ -132,6 +132,8 @@ classdef BarStim < BaseStim
     properties (Access = protected)
         baseMsgId;
         name;
+		colorVec;
+		stimType;
     end
     
     properties (Access = private)

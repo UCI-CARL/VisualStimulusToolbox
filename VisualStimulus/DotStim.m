@@ -262,8 +262,10 @@ classdef DotStim < BaseStim
     end
     
     properties (Hidden, Access = protected)
-        name;
-        baseMsgId;
+        baseMsgId;          % string prepended to error messages
+        name;               % string describing the stimulus type
+		colorVec;           % 3-element vector specifying stimulus color
+		stimType;           % integer from obj.supportedStimTypes
     end
     
     properties (Hidden, Access = private)

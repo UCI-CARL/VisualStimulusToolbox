@@ -7,6 +7,10 @@ Legend:
 Release 1.0
 ===========================================================================
 
+2016-06-21  Michael Beyeler <mbeyeler@uci.edu>
+ + Add color option to GratingStim.
+ * Finish GratingStim documentation.
+
 2016-06-16  Michael Beyeler <mbeyeler@uci.edu>
  + Add recording function for storing stimuli as AVI files.
  + Add save-to-file function for storing stimuli as raw binary data.

@@ -40,11 +40,19 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             
             % read version number
             ver = fread(fid, 1, 'float');
-            if (ver ~= obj.version)
+            if ver ~= obj.version
                 error(['Unknown file version, must have Version ' ...
                     num2str(obj.version) ' (Version ' ...
                     num2str(ver) ' found)'])
-            end
+			end
+			
+			% read stimulus type and make sure it's same as obj
+			type = fread(fid, 1, 'int');
+			if type ~= obj.stimType
+				msgId = [obj.baseMsgId ':stimTypeMismatch'];
+				msg = ['Expected stimulus type "' class(obj) '"'];
+				error(msgId, msg)
+			end
             
             % read number of channels
             obj.channels = fread(fid, 1, 'int8');
@@ -88,12 +96,15 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             if nargin<2,fileName=[obj.name '.dat'];end
             fid = fopen(fileName,'w');
             if fid == -1
-                error(['Could not open "' fileName ...
-                    '" with write permission.']);
+				msgId = [obj.baseMsgId ':filePermission'];
+				msg = ['Could not open "' fileName '" with write ' ...
+					'permission.'];
+				error(msgId, msg);
             end
             
             if obj.length == 0
-                error('Stimulus is empty. Nothing to save.')
+				msgId = [obj.baseMsgId ':stimEmpty'];
+                error(msgId, 'Stimulus is empty. Nothing to save.')
             end
             
             % check whether fwrite is successful
@@ -105,6 +116,16 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             
             % include version number
             cnt=fwrite(fid,obj.version,'float');  wrErr = wrErr | (cnt~=1);
+			
+			% include stimulus type
+			if ~isfield(obj.supportedStimTypes, class(obj))
+				msgId = [obj.baseMsgId ':stimTypeMismatch'];
+				msg = ['Stimulus type "' class(obj) '" is not part of ' ...
+					'obj.supportedStimTypes'];
+				error(msgId, msg)
+			end
+			typeInt = eval(['obj.supportedStimTypes.' class(obj)]);
+			cnt=fwrite(fid,typeInt,'int');        wrErr = wrErr | (cnt~=1);
             
             % include number of channels (1 for GRAY, 3 for RGB)
             cnt=fwrite(fid,obj.channels,'int8');  wrErr = wrErr | (cnt~=1);
@@ -365,7 +386,7 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
     end
     
     %% Protected Methods
-    methods (Access = protected)
+    methods (Hidden, Access = protected)
         function appendFrames(obj, frames)
             if size(frames,1) ~= obj.height || ...
                     size(frames,2) ~= obj.width || ...
@@ -377,23 +398,6 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             end
             try
                 obj.stim = cat(4, obj.stim, frames);
-                obj.length = size(obj.stim,4);
-            catch causeException
-                throw(causeException)
-            end
-        end
-        
-        function prependFrames(obj, frames)
-            if size(frames,1) ~= obj.height || ...
-                    size(frames,2) ~= obj.width || ...
-                    size(frames,3) ~= obj.channels
-                msgId = [obj.baseMsgId ':dimensionMismatch'];
-                msg = ['frames must be of size height x width x ' ...
-                    'channels x number frames'];
-                error(msgId, msg)
-            end
-            try
-                obj.stim = cat(4, frames, obj.stim);
                 obj.length = size(obj.stim,4);
             catch causeException
                 throw(causeException)
@@ -423,6 +427,16 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             % the following noise types are supported
             obj.supportedNoiseTypes = {'gaussian', 'localvar', ...
                 'poisson', 'salt & pepper', 'speckle'};
+			
+			% the following stimulus types are supported
+			obj.supportedStimTypes = struct( ...
+				'GratingStim', 0, ...
+				'PlaidStim', 1, ...
+				'DotStim', 2, ...
+				'BarStim', 3, ...
+				'PictureStim', 4, ...
+				'MovieStim', 5, ...
+				'CompoundStim', 6);
                         
             % then initialize all parameters of derived class
             obj.initDefaultParamsDerived();
@@ -454,7 +468,30 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
                     end
                 otherwise
             end
-        end
+		end
+		
+		function rgb = char2rgb(obj, character)
+			% rgb = char2rgb(character) converts a single character
+			% (ColorSpec) to a 3-element vector (RGB).
+			% Supported colors are: 'k' (black), 'b' (blue), 'g' (green),
+			% 'c' (cyan), 'r' (red), 'm' (magenta), 'y' (yellow), and 'w'
+			% (white).
+			if numel(character) ~= 1 || ~ischar(character)
+				msgId = [obj.baseMsgId ':typeMismatch'];
+				msg = 'Color must be a single character.';
+				error(msgId, msg)
+			end
+			
+			f = strfind('kbgcrmyw', lower(character));
+			if isempty(f)
+				msgId = [obj.baseMsgId ':unknownColor'];
+                msg = ['Color must be one of kbgcrmyw, ' character ...
+					' found'];
+                error(msgId, msg)
+			end
+			
+			rgb = rem(floor((f - 1) * [0.25 0.5 1]), 2);
+		end
     end
     
     %% Abstract Methods
@@ -482,15 +519,19 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
         plotStepBW;         % flag whether to make a step backward
         
         interactiveMode;
+		
     end
     
     properties (Hidden, SetAccess = private, GetAccess = protected)
         version;
         fileSignature;
+		supportedStimTypes;
     end
     
     properties (Hidden, Abstract, Access = protected)
-        baseMsgId;
-        name;
+        baseMsgId;          % string prepended to error messages
+        name;               % string describing the stimulus type
+		colorVec;           % 3-element vector specifying stimulus color
+		stimType;           % integer from obj.supportedStimTypes
     end
 end
