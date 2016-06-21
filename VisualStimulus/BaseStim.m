@@ -5,6 +5,20 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             new = copy(obj);
         end
         
+        function res = plus(obj1, obj2)
+            % resize to size of first object
+            obj2.resize([obj1.height obj1.width]);
+            
+            if strcmpi(class(obj1), class(obj2))
+                res = obj1.clone();
+                res.appendFrames(obj2.stim);
+            else
+                res = CompoundStim([obj1.height obj1.width obj1.channels]);
+                res.appendFrames(obj1.stim);
+                res.appendFrames(obj2.stim);
+            end
+        end
+        
         function clear(obj)
             obj.length = 0;
             obj.stim = [];
