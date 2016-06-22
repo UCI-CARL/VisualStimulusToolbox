@@ -4,9 +4,13 @@
     <param.authnamewatermark>Michael Beyeler</param.authnamewatermark>
     <param.email>mbeyeler@uci.edu</param.email>
     <param.company>University of California, Irvine</param.company>
-    <param.summary>Toolbox for generating 2D visual stimuli related to neuroscience.</param.summary>
-    <param.description>A Matlab toolbox for generating, storing, and plotting 2D visual stimuli related to neuroscience such as sinusoidal gratings, plaids, random dot fields, and noise.</param.description>
-    <param.screenshot />
+    <param.summary>A lightweight Matlab toolbox for generating, storing, and plotting visual stimuli related to vision and neuroscience research.</param.summary>
+    <param.description>VisualStimulusToolbox is a lightweight MATLAB toolbox for generating, storing, and plotting 2D visual stimuli commonly used in vision and neuroscience research, such as sinusoidal gratings, plaids, random dot fields, and noise.
+
+The toolbox allows for the easy creation, manipulation, plotting, and storing of visual stimuli such as drifting sinusoidal gratings, drifting plaids, drifting bars, random dot clouds, as well as their combinations. Every stimulus can be plotted, recorded to AVI, and stored to binary.
+
+http://uci-carl.github.io/VisualStimulusToolbox</param.description>
+    <param.screenshot>C:\Users\mbeyeler\Dropbox\CARL\Pictures\CARL-Logo-trans.png</param.screenshot>
     <param.version>1.0</param.version>
     <param.output>${PROJECT_ROOT}\VisualStimulus.mltbx</param.output>
     <param.products.name />
@@ -21,7 +25,6 @@
     <param.docs />
     <param.matlabpath.excludes />
     <unset>
-      <param.screenshot />
       <param.version />
       <param.output />
       <param.products.name />
@@ -41,8 +44,12 @@
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}\VisualStimulus\BarStim.m</file>
       <file>${PROJECT_ROOT}\VisualStimulus\BaseStim.m</file>
-      <file>${PROJECT_ROOT}\VisualStimulus\runAllTests.m</file>
-      <file>${PROJECT_ROOT}\VisualStimulus\test</file>
+      <file>${PROJECT_ROOT}\VisualStimulus\CompoundStim.m</file>
+      <file>${PROJECT_ROOT}\VisualStimulus\DotStim.m</file>
+      <file>${PROJECT_ROOT}\VisualStimulus\GratingStim.m</file>
+      <file>${PROJECT_ROOT}\VisualStimulus\MovieStim.m</file>
+      <file>${PROJECT_ROOT}\VisualStimulus\PictureStim.m</file>
+      <file>${PROJECT_ROOT}\VisualStimulus\PlaidStim.m</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded />
