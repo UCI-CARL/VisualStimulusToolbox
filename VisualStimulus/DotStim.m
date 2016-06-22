@@ -169,7 +169,13 @@ classdef DotStim < BaseStim
             validateattributes(dotRadius,{'numeric'}, {'real'}, 'add', ...
                 'radius')
             
-            if density<0
+			if obj.height == 0 || obj.width == 0
+				msgId = [obj.baseMsgId ':InvalidStimulusDimensions'];
+				msg = 'Cannot add frames to 0-by-0 stimulus.';
+				error(msgId, msg)
+			end
+			
+			if density<0
                 if dotRadius<0
                     density = 0.1;
                 else

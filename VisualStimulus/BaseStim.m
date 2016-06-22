@@ -488,13 +488,14 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             % stimulus remains unchanged.
             if obj.channels == 3
                 return
-            end
+			end
             
             assert(obj.channels == 1)
             channel = obj.stim;
             obj.stim(:,:,1,:) = channel;
             obj.stim(:,:,2,:) = channel;
             obj.stim(:,:,3,:) = channel;
+			obj.channels = 3;
             disp([obj.baseMsgId ' - Stimulus successfully converted ' ...
                 'to RGB.'])
         end

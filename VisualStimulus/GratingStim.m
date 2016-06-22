@@ -170,7 +170,7 @@ classdef GratingStim < BaseStim
 					sinGrating(:,:,1,:) = channel;
 				else
 					% reverse contrast
-					sinGrating(:,:,1,:) = -channel + 1;
+					sinGrating(:,:,1,:) = 1 - channel;
 				end
 			else
 				sz = size(channel);
@@ -196,7 +196,8 @@ classdef GratingStim < BaseStim
             obj.freq = [0.1 0.1];
             obj.contrast = 1;
             obj.phase = 0;
-            obj.baseMsgId = 'VisualStimulus:GratingStim';
+
+			obj.baseMsgId = 'VisualStimulus:GratingStim';
             obj.name = 'GratingStim';
 			obj.stimType = eval(['obj.supportedStimTypes.' obj.name]);
 			obj.colorChar = 'w';
