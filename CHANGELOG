@@ -1,0 +1,46 @@
+Legend:
+ + added element
+ - removed element
+ * changed element
+
+===========================================================================
+Release 1.0
+===========================================================================
+
+2016-06-22  Michael Beyeler <mbeyeler@uci.edu>
+ * Extend PictureStim and MovieStim to being able to combine multiple
+   elements.
+
+2016-06-21  Michael Beyeler <mbeyeler@uci.edu>
+ + Add color option to all stimulus types.
+ * Extend source code documentation.
+
+2016-06-16  Michael Beyeler <mbeyeler@uci.edu>
+ + Add recording function for storing stimuli as AVI files.
+ + Add save-to-file function for storing stimuli as raw binary data.
+ + Add PictureStim for creating a stimulus from a picture.
+ + Add MovieStim for creating a stimulus from a movie.
+ + Add noise option for adding noise to specified frames.
+ + Add resize function for resizing stimuli dimensions.
+
+2016-06-08  Michael Beyeler <mbeyeler@uci.edu>
+ + Add interactive plot mode for stepping forward/backward through frames.
+
+2016-06-07  Michael Beyeler <mbeyeler@uci.edu>
+ + Add DotStim for creating random dot clouds.
+
+2016-06-04  Michael Beyeler <mbeyeler@uci.edu>
+ + Add GratingStim for creating sinusoidal gratings.
+
+2016-05-20  Michael Beyeler <mbeyeler@uci.edu>
+ + Add barebone structure for base/derived classes
+ + Add BarStim for creating a drifting bar stimulus.
+ + Add Toolbox project
+
+
+===========================================================================
+Release 0.1
+===========================================================================
+
+2014-10-14	Michael Beyeler <mbeyeler@uci.edu>
+ + Add code base from CARLsim repo.
