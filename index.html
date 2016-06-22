@@ -37,10 +37,11 @@
           <li><a href="#getting-started">Getting Started</a></li>
           <li><a href="#first-stimulus">Creating Your First Stimulus</a></li>
           <li><a href="#manipulating-stimuli">Manipulating an Existing Stimulus</a></li>
+          <li><a href="#combining-stimuli">Combining Different Stimulus Types</a></li>
           <li><a href="#record-avi">Recording AVI</a></li>
           <li><a href="#saving-loading">Saving / Loading</a></li>
           <li><a href="#Acknowledgment">Acknowledgment</a></li>
-          </ul>
+        </ul>
       </header>
       
       <section>
@@ -73,176 +74,222 @@
           to spike trains that can serve as input to CARLsim simulations.
           However, the toolbox can be used independently.</p>
 
-        <h3>
-          <a id="installation" class="anchor" href="#installation" aria-hidden="true">
-            <span aria-hidden="true" class="octicon octicon-link"></span>
-          </a>
-          Installation
-        </h3>
-        <p>
-          You can view and manage installed add-ons in MATLAB R2016a using the Add-On Manager. 
-          To open the Add-On Manager, go to the Home tab, and select Add-Ons > Manage Add-Ons.
-        </p>
-        
-        <p>
-          In older MATLAB versions (before R2015b), simply add the directory 
-          <tt>VisualStimulus/VisualStimulusToolbox</tt> to your MATLAB path, and you are good to go.
-        </p>
-
-
-
-        <h3>
-          <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true">
-            <span aria-hidden="true" class="octicon octicon-link"></span>
-          </a>
-          Getting Started
-        </h3>
-
-        <p style="margin-bottom: 0">
-          VisualStimulusToolbox provides a number of classes for creating, plotting, and storing visual 
-          stimuli such as:
-        </p>
-        <ul>
-          <li><tt>DotStim</tt>: field of randomly drifting dots</li>
-          <li><tt>GratingStim</tt>: drifting sinusoidal grating</li>
-          <li><tt>PlaidStim</tt>: drifting plaid stimulus (composed of two sinusoidal gratings)</li>
-          <li><tt>BarStim</tt>: drifting bar stimulus</li>
-          <li><tt>PictureStim</tt>: stimulus made from a picture (BMP, CUR, GIF, HDF, ICO, JPEG, PBM, PCX, PGM, PNG, PPM, RAS, TIFF, XWD)</li>
-          <li><tt>VideoStim</tt>: stimulus made from a movie (AVI, MPG, MP4, M4V, MOV, WMV, MJ2, ASF, ASX)</li>
-          <li><tt>CompoundStim</tt>: stimulus made from a mixture of stimulus types listed above</li>
-        </ul>
-
-
-
-        <h3>
-          <a id="first-stimulus" class="anchor" href="#first-stimulus" aria-hidden="true">
-            <span aria-hidden="true" class="octicon octicon-link"></span>
-          </a>
-          Creating Your First Stimulus
-        </h3>
-        <p style="margin-bottom: 0">A stimulus is intantiated by passing the desired stimulus [height, width] to the constructor:</p>
-        <pre>&gt;&gt; dot = DotStim([120 160])
-DotStim with properties:
-
-width: 160
-height: 120
-channels: 1
-length: 0
-stim: []
-supportedNoiseTypes: {'gaussian','localvar', 'poisson',
-                      'salt &amp; pepper', 'speckle'}</pre>
-
-          <p style="margin-bottom: 0">
-            Frames can then be added using the method <tt>add</tt>, by specifying drift direction (in degrees) and speed
-            (in pixels/frame) as well as some other stimulus-specific options (e.g., dot density, dot coherence, 
-            dot size, etc.):
+          <h3>
+            <a id="installation" class="anchor" href="#installation" aria-hidden="true">
+              <span aria-hidden="true" class="octicon octicon-link"></span>
+            </a>
+            Installation
+          </h3>
+          <p>
+            You can view and manage installed add-ons in MATLAB R2016a using the Add-On Manager. 
+            To open the Add-On Manager, go to the Home tab, and select Add-Ons > Manage Add-Ons.
           </p>
 
-          <pre>&gt;&gt; numFrames = 10;
-&gt;&gt; dotSpeed = 1;
-&gt;&gt; for dirDeg=(0:7)*45
-      dot.add(numFrames, dirDeg, dotSpeed);
-   end
-&gt;&gt; dot.plot;</pre>
+          <p>
+            In older MATLAB versions (before R2015b), simply add the directory 
+            <tt>VisualStimulus/VisualStimulusToolbox</tt> to your MATLAB path, and you are good to go.
+          </p>
 
-            <p>
-              This will create a stimulus made of a total of 80 frames, where dots drift into one of eight directions 
-              (in 45 degree increments) for 10 frames each.
+
+
+          <h3>
+            <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true">
+              <span aria-hidden="true" class="octicon octicon-link"></span>
+            </a>
+            Getting Started
+          </h3>
+
+          <p style="margin-bottom: 0">
+            VisualStimulusToolbox provides a number of classes for creating, plotting, and storing visual 
+            stimuli such as:
+          </p>
+          <ul>
+            <li><tt>DotStim</tt>: field of randomly drifting dots</li>
+            <li><tt>GratingStim</tt>: drifting sinusoidal grating</li>
+            <li><tt>PlaidStim</tt>: drifting plaid stimulus (composed of two sinusoidal gratings)</li>
+            <li><tt>BarStim</tt>: drifting bar stimulus</li>
+            <li><tt>PictureStim</tt>: stimulus made from a picture (BMP, CUR, GIF, HDF, ICO, JPEG, PBM, PCX, PGM, PNG, PPM, RAS, TIFF, XWD)</li>
+            <li><tt>VideoStim</tt>: stimulus made from a movie (AVI, MPG, MP4, M4V, MOV, WMV, MJ2, ASF, ASX)</li>
+            <li><tt>CompoundStim</tt>: stimulus made from a mixture of stimulus types listed above</li>
+          </ul>
+
+
+
+          <h3>
+            <a id="first-stimulus" class="anchor" href="#first-stimulus" aria-hidden="true">
+              <span aria-hidden="true" class="octicon octicon-link"></span>
+            </a>
+            Creating Your First Stimulus
+          </h3>
+          <p style="margin-bottom: 0">A stimulus is intantiated by passing the desired stimulus [height, width] to the constructor:</p>
+          <pre>&gt;&gt; dot = DotStim([120 160])
+            DotStim with properties:
+
+            width: 160
+            height: 120
+            channels: 1
+            length: 0
+            stim: []
+            supportedNoiseTypes: {'gaussian','localvar', 'poisson',
+            'salt &amp; pepper', 'speckle'}</pre>
+
+            <p style="margin-bottom: 0">
+              Frames can then be added using the method <tt>add</tt>, by specifying drift direction (in degrees) and speed
+              (in pixels/frame) as well as some other stimulus-specific options (e.g., dot density, dot coherence, 
+              dot size, etc.):
             </p>
 
-            <p style="margin-bottom: 0">During plotting, key events can be used to pause, stop, and step through the frames.</p>
+            <pre>&gt;&gt; numFrames = 10;
+              &gt;&gt; dotSpeed = 1;
+              &gt;&gt; for dirDeg=(0:7)*45
+              dot.add(numFrames, dirDeg, dotSpeed);
+              end
+              &gt;&gt; dot.plot;</pre>
 
-            <ul>
-              <li>Pressing <tt>p</tt> will pause plotting until another key is pressed.</li>
-              <li>
-                Pressing <tt>s</tt> will enter stepping mode, where the succeeding frame can be reached by pressing the 
-                right-arrow key, and the preceding frame can be reached by pressing the left-arrow key. Pressing <tt>s</tt> again
-                will exit stepping mode.
-              </li>
-              <li>Pressing <tt>q</tt> will exit plotting.</li>
-              <li>
-                Internally, the stimulus is stored as a 4D array. For example, grayscale stimuli have one channel, 
-                and RGB stimuli have three channels. The raw data array can also be accessed directly:
-              <pre>&gt;&gt; rawData4D = dot.stim;</pre>
-              </li>
-            </ul>
+              <p>
+                This will create a stimulus made of a total of 80 frames, where dots drift into one of eight directions 
+                (in 45 degree increments) for 10 frames each.
+              </p>
 
-              <p>A stimulus can also be converted to an AVI movie or stored as a binary file (see below).</p>
-
-
-              <h3>
-                <a id="manipulating-stimuli" class="anchor" href="#manipulating-stimuli" aria-hidden="true">
-                  <span aria-hidden="true" class="octicon octicon-link"></span>
-                </a>
-                Manipulating an Existing Stimulus
-              </h3>
-
-              <p style="margin-bottom: 0">Every stimulus type also comes with a number of handy helper methods:</p>
+              <p style="margin-bottom: 0">During plotting, key events can be used to pause, stop, and step through the frames.</p>
 
               <ul>
-                <li><tt>clear</tt>: Deletes all frames.</li>
-                <li><tt>erase</tt>: Deletes either a single frame or a list of frames.</li>
-                <li><tt>popFront</tt>: Deletes the first frame.</li>
-                <li><tt>popBack</tt>: Deletes the last frame.</li>
-                <li><tt>rgb2gray</tt>: Converts an RGB stimulus to a grayscale stimulus.</li>
-                <li><tt>resize</tt>: Resizes all frames by specifying either a scaling factor or a desired [height, width].</li>
-                <li><tt>appendBlanks</tt>: Appends blank frames of a given grayscale value.</li>
+                <li>Pressing <tt>p</tt> will pause plotting until another key is pressed.</li>
                 <li>
-                  <tt>addNoise</tt>: Adds noise to all existing frames. Supported noise types are given by variable 
-                  <tt>supportedNoiseTypes</tt> and currently includes Gaussian noise with constant mean, Gaussian 
-                  white noise, Poisson noise, Salt &amp; Pepper noise, and speckle (multiplicative) noise.
+                  Pressing <tt>s</tt> will enter stepping mode, where the succeeding frame can be reached by pressing the 
+                  right-arrow key, and the preceding frame can be reached by pressing the left-arrow key. Pressing <tt>s</tt> again
+                  will exit stepping mode.
                 </li>
+                <li>Pressing <tt>q</tt> will exit plotting.</li>
               </ul>
 
-              <h3>
-                <a id="designer-templates" class="anchor" href="#recording-avi" aria-hidden="true">
-                  <span aria-hidden="true" class="octicon octicon-link"></span>
-                </a>
-                Recording AVI
-              </h3>
-
-              <p style="margin-bottom: 0">
-                Every stimulus type can be converted to an AVI movie using the record method by specifying a desired file 
-                name and frame rate:
+              <p>
+                Internally, the stimulus is stored as a 4D array. For example, grayscale stimuli have one channel, 
+                and RGB stimuli have three channels. The raw data array can also be accessed directly:
+                <pre>&gt;&gt; rawData4D = dot.stim;</pre>
               </p>
 
-              <pre>&gt;&gt; dot.record('myMovie.avi', 10); % 10 frames per second</pre>
+              <p style="margin-bottom: 0">Color stimuli can be created by passing a ColorSpec string to the constructor:</p>
 
-              <h3>
-                <a id="saving-loading" class="anchor" href="#saving-loading" aria-hidden="true">
-                  <span aria-hidden="true" class="octicon octicon-link"></span>
-                </a>
-                Saving / Loading
-              </h3>
+              <pre>&gt;&gt; dot = DotStim([120 160], 'r')
+                DotStim with properties:
 
-              <p>Every stimulus type can be stored to a binary file, which can be loaded at a later point:</p>
+                width: 160
+                height: 120
+                channels: 3
+                length: 0
+                stim: []
+                supportedNoiseTypes: {'gaussian','localvar', 'poisson',
+                'salt &amp; pepper', 'speckle'}</pre>
 
-              <pre>&gt;&gt; dot.save('myBinaryStim.dat');
-&gt;&gt; newDot = DotStim;
-&gt;&gt; newDot.load('myBinaryStim.dat');</pre>
+                <p>
+                  Currently, the following color specs are supported: <tt>'k'</tt> (black), <tt>'b'</tt> (blue), 
+                  <tt>'g'</tt> (green), <tt>'c'</tt> (cyan), <tt>'r'</tt> (red), <tt>'m'</tt> (magenta), 
+                  <tt>'y'</tt> (yellow), and <tt>'w'</tt> (white).
+                </p>
 
-<p style="margin-bottom: 0">Make sure the two stimuli are the same:</p>
-<pre>&gt;&gt; assert(all(oldStim(:) == newDot.stim(:)))</pre>
+                <p>A stimulus can also be converted to an AVI movie or stored as a binary file (see below).</p>
 
 
-              <h3>
-                <a id="acknowledgment" class="anchor" href="#acknowledgment" aria-hidden="true">
-                  <span aria-hidden="true" class="octicon octicon-link"></span>
-                </a>
-                Acknowledgment
-              </h3>
+                <h3>
+                  <a id="manipulating-stimuli" class="anchor" href="#manipulating-stimuli" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                  </a>
+                  Manipulating an Existing Stimulus
+                </h3>
 
-              <p>
-                Some of this code is based on scripts initially authored by Timothy Saint 
-                (saint at ncs dot nyu dot edu) and Eero P. Simoncelli 
-                (eero dot simoncelli at nyu dot edu) at NYU.
-              </p>
+                <p style="margin-bottom: 0">Every stimulus type also comes with a number of handy helper methods:</p>
 
-              <p>
-                These scripts were released as part of the 
-                <a href="http://www.cns.nyu.edu/~lcv/MTmodel/" target="_blank">Motion Energy</a> model in 2005, 
-                which was released without stating 
-                any software license restrictions. Their contributions are attributed at relevant places in the source code.
+                <ul>
+                  <li><tt>clear</tt>: Deletes all frames.</li>
+                  <li><tt>erase</tt>: Deletes either a single frame or a list of frames.</li>
+                  <li><tt>popFront</tt>: Deletes the first frame or number of frames.</li>
+                  <li><tt>popBack</tt>: Deletes the last frame or number of frames.</li>
+                  <li><tt>rgb2gray</tt>: Converts an RGB stimulus to a grayscale stimulus.</li>
+                  <li><tt>resize</tt>: Resizes all frames by specifying either a scaling factor or a desired [height, width].</li>
+                  <li><tt>appendBlanks</tt>: Appends blank frames of a given grayscale value.</li>
+                  <li>
+                    <tt>addNoise</tt>: Adds noise to all existing frames. Supported noise types are given by variable 
+                    <tt>supportedNoiseTypes</tt> and currently include Gaussian noise with constant mean, Gaussian 
+                    white noise, Poisson noise, Salt &amp; Pepper noise, and speckle (multiplicative) noise.
+                  </li>
+                </ul>
+
+<h3>
+                  <a id="designer-templates" class="anchor" href="#combining-stimuli" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                  </a>
+                  Combining Different Stimulus Types
+                </h3>
+
+                <p style="margin-bottom: 0">
+                  Stimulus types can be combined to create compound stimuli.
+                  Use optional input arguments to the constructor for fast stimulus generation.
+                  For example, to combine 10 frames of drifting sinusoidal grating (120x180 pixels, red, 
+                  drifting upwards and to the right at a 45 degree angle) with 20 frames of a drifting random 
+                  dot cloud (240x360 pixels, blue, drifting upwards at a 90 degree angle),
+                  use the following one-liner:
+                </p>
+
+                <pre>&gt;&gt; res = GratingStim([120 180],'r',10,45) + DotStim([240 360],'b',20,90)</pre>
+
+                <p>
+                  If the two stimuli have distinct canvas dimensions, the second stimulus will be resized to match 
+                  the first stimulus' [height width]. If any of the two stimuli have more than one color channel
+                  (e.g., RGB), the result will also have more than one color channel.
+                </p>
+
+
+                <h3>
+                  <a id="designer-templates" class="anchor" href="#recording-avi" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                  </a>
+                  Recording AVI
+                </h3>
+
+                <p style="margin-bottom: 0">
+                  Every stimulus type can be converted to an AVI movie using the record method by specifying a desired file 
+                  name and frame rate:
+                </p>
+
+                <pre>&gt;&gt; dot.record('myMovie.avi', 10); % 10 frames per second</pre>
+
+                <h3>
+                  <a id="saving-loading" class="anchor" href="#saving-loading" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                  </a>
+                  Saving / Loading
+                </h3>
+
+                <p>Every stimulus type can be stored to a binary file, which can be loaded at a later point:</p>
+
+                <pre>&gt;&gt; dot.save('myBinaryStim.dat');
+                  &gt;&gt; newDot = DotStim;
+                  &gt;&gt; newDot.load('myBinaryStim.dat');</pre>
+
+                  <p style="margin-bottom: 0">Make sure the two stimuli are the same:</p>
+                  <pre>&gt;&gt; assert(all(oldStim(:) == newDot.stim(:)))</pre>
+
+
+                  <h3>
+                    <a id="acknowledgment" class="anchor" href="#acknowledgment" aria-hidden="true">
+                      <span aria-hidden="true" class="octicon octicon-link"></span>
+                    </a>
+                    Acknowledgment
+                  </h3>
+
+                  <p>
+                    Some of this code is based on scripts initially authored by Timothy Saint 
+                    (saint at ncs dot nyu dot edu) and Eero P. Simoncelli 
+                    (eero dot simoncelli at nyu dot edu) at NYU for generating sinusoidal gratings, plaids, and
+                    random dot clouds.
+                  </p>
+
+                  <p>
+                    These scripts were released as part of the 
+                    <a href="http://www.cns.nyu.edu/~lcv/MTmodel/" target="_blank">Motion Energy</a> model in 2005, 
+                    which was released without stating 
+                    any software license restrictions. Their contributions are attributed at relevant places in the source code.
                   </p>
 
                 </section>
