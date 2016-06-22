@@ -106,6 +106,9 @@ classdef GratingStim < BaseStim
 			% Warning: You cannot add frames to 0-by-0 sized stimulus. Use
 			% the empty constructor only to load stimuli.
 			%
+            % This method uses a script initially authored by Timothy Saint 
+            % and Eero P. Simoncelli at NYU.
+            %
 			% DIMHW      - 1-by-2 stimulus dimensions: [height width].
 			%              Default: [0 0].
 			% LENGTH     - Number of frames to create.

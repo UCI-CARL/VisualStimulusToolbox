@@ -100,6 +100,7 @@ the frames.
   Pressing `s` again will exit stepping mode.
 * Pressing `q` will exit plotting.
 
+
 Internally, the stimulus is stored as a 4D array
 <height x width x channels x frames>.
 For example, grayscale stimuli have one channel, and RGB stimuli have
@@ -107,6 +108,21 @@ three channels. The raw data array can also be accessed directly:
 ```Matlab
 >> rawData4D = dot.stim;
 ```
+
+Color stimuli can be created by passing a ColorSpec string to the
+constructor:
+```
+>> dot = DotStim([120 160], 'r')
+                  width: 160
+                 height: 120
+               channels: 1
+                 length: 0
+                   stim: []
+    supportedNoiseTypes: {'gaussian'  'localvar'  'poisson'  'salt & pepper'  'speckle'}
+```
+Currently, the following color specs are supported: 'k' (black), 
+'b' (blue), 'g' (green) 'c' (cyan), 'r' (red), 'm' (magenta), 'y' (yellow), 
+and 'w' (white).
 
 A stimulus can also be converted to an AVI movie or stored as a binary
 file (see below).
@@ -117,16 +133,35 @@ file (see below).
 Every stimulus type also comes with a number of handy helper methods:
 * `clear`: Deletes all frames.
 * `erase`: Deletes either a single frame or a list of frames.
-* `popFront`: Deletes the first frame.
-* `popBack`: Deletes the last frame.
+* `popFront`: Deletes the first frame or number of frames.
+* `popBack`: Deletes the last frame or number of frames.
 * `rgb2gray`: Converts an RGB stimulus to a grayscale stimulus.
+* `gray2rgb`: Converts a grayscale stimulus to an RGB stimulus.
 * `resize`: Resizes all frames by specifying either a scaling factor or
    a desired [height, width].
-* `appendBlanks`: Appends blank frames of a given grayscale value. 
 * `addNoise`: Adds noise to all existing frames. Supported noise types are
-  given by variable `supportedNoiseTypes` and currently includes Gaussian
+  given by variable `supportedNoiseTypes` and currently include Gaussian
   noise with constant mean, Gaussian white noise, Poisson noise, Salt &
   Pepper noise, and speckle (multiplicative) noise.
+
+
+#### Combining Different Stimulus Types
+
+Stimulus types can be combined to create compound stimuli.
+Use optional input arguments to the constructor for fast stimulus
+generation.
+For example, to combine 10 frames of drifting sinusoidal grating
+(120x180 pixels, red, drifting upwards and to the right at a 45 degree
+angle)
+with 20 frames of a drifting random dot cloud (240x360 pixels, blue,
+drifting upwards at a 90 degree angle), use the following one-liner:
+```
+>> res = GratingStim([120 180],'r',10,45) + DotStim([240 360],'b',20,90)
+```
+If the two stimuli have distinct canvas dimensions, the second stimulus 
+will be resized to match the first stimulus' [height width].
+If any of the two stimuli have more than one color channel (e.g., RGB), 
+the result will also have more than one color channel.
 
 
 #### Recording AVI
@@ -154,7 +189,7 @@ at a later point:
 ## Acknowledgment
 Some of this code is based on scripts initially authored by Timothy Saint
 <saint@ncs.nyu.edu> and Eero P. Simoncelli <eero.simoncelli@nyu.edu>
-at NYU.
+at NYU for generating sinusoidal gratings, plaids, and dot clouds.
 
 These scripts were released as part of the
 [Motion Energy model](http://www.cns.nyu.edu/~lcv/MTmodel) in 2005,

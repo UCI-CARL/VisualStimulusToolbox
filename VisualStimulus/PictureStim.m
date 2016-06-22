@@ -1,6 +1,6 @@
 classdef PictureStim < BaseStim
     methods (Access = public)
-        function obj = PictureStim(fileName)
+        function obj = PictureStim(fileName, length)
             if nargin == 0
                 obj.height = 0;
                 obj.width = 0;
@@ -10,13 +10,15 @@ classdef PictureStim < BaseStim
             end
             
             img = double(flipud(imread(fileName))) / 255;
-			size(img)
 			
             obj.height = size(img, 1);
             obj.width = size(img, 2);
             obj.channels = size(img, 3);
             
             obj.initDefaultParams();
+            
+            % reproduce for length frames
+            img = repmat(img, 1, 1, 1, length);
             
             obj.appendFrames(img)
         end
@@ -26,12 +28,16 @@ classdef PictureStim < BaseStim
         function initDefaultParamsDerived(obj)
             obj.baseMsgId = 'VisualStimulus:PictureStim';
             obj.name = 'PictureStim';
+			obj.stimType = eval(['obj.supportedStimTypes.' obj.name]);
         end
     end
 
     properties (Access = protected)
-        baseMsgId;
-        name;
+        baseMsgId;          % string prepended to error messages
+        name;               % string describing the stimulus type
+		colorChar;          % single-character specifying stimulus color
+		colorVec;           % 3-element vector specifying stimulus color
+		stimType;           % integer from obj.supportedStimTypes
     end
     
     properties (Access = private)
