@@ -49,9 +49,9 @@ and storing visual stimuli such as:
 * `GratingStim`: drifting sinusoidal grating
 * `PlaidStim`: drifting plaid stimulus (composed of two sinusoidal gratings)
 * `BarStim`: drifting bar stimulus
-* `PictureStim`: stimulus made from a picture (BMP, CUR, GIF, HDF, ICO, 
+* `PictureStim`: stimulus made from one or several pictures (BMP, CUR, GIF, HDF, ICO, 
   JPEG, PBM, PCX, PGM, PNG, PPM, RAS, TIFF, XWD)
-* `VideoStim`: stimulus made from a movie (AVI, MPG, MP4, M4V, MOV, WMV,
+* `MovieStim`: stimulus made from one or several movies (AVI, MPG, MP4, M4V, MOV, WMV,
    MJ2, ASF, ASX)
 * `CompoundStim`: stimulus made from a mixture of stimulus types listed
   above
@@ -111,18 +111,18 @@ three channels. The raw data array can also be accessed directly:
 
 Color stimuli can be created by passing a ColorSpec string to the
 constructor:
-```
+```Matlab
 >> dot = DotStim([120 160], 'r')
                   width: 160
                  height: 120
-               channels: 1
+               channels: 3
                  length: 0
                    stim: []
     supportedNoiseTypes: {'gaussian'  'localvar'  'poisson'  'salt & pepper'  'speckle'}
 ```
-Currently, the following color specs are supported: 'k' (black), 
-'b' (blue), 'g' (green) 'c' (cyan), 'r' (red), 'm' (magenta), 'y' (yellow), 
-and 'w' (white).
+Currently, the following color specs are supported: `'k'` (black), 
+`'b'` (blue), `'g'` (green), `'c'` (cyan), `'r'` (red), `'m'` (magenta), `'y'` (yellow), 
+and `'w'` (white).
 
 A stimulus can also be converted to an AVI movie or stored as a binary
 file (see below).
@@ -136,7 +136,7 @@ Every stimulus type also comes with a number of handy helper methods:
 * `popFront`: Deletes the first frame or number of frames.
 * `popBack`: Deletes the last frame or number of frames.
 * `rgb2gray`: Converts an RGB stimulus to a grayscale stimulus.
-* `gray2rgb`: Converts a grayscale stimulus to an RGB stimulus.
+* `gray2rgb`: Converts a grayscale stimulus to RGB.
 * `resize`: Resizes all frames by specifying either a scaling factor or
    a desired [height, width].
 * `addNoise`: Adds noise to all existing frames. Supported noise types are
