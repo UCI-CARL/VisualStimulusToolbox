@@ -138,6 +138,7 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             % reshape
             obj.stim = reshape(obj.stim, obj.height, obj.width, ...
                 obj.channels, obj.length);
+			obj.stim = flipud(permute(obj.stim, [2 1 3 4]));
             disp([obj.baseMsgId ' - Successfully loaded stimulus from ' ...
                 'file "' fileName '".'])
         end            
@@ -192,7 +193,8 @@ classdef (Abstract) BaseStim < matlab.mixin.Copyable
             cnt=fwrite(fid,obj.length,'int');     wrErr = wrErr | (cnt~=1);
             
             % read stimulus
-            cnt=fwrite(fid,obj.stim*255,'uchar');
+			ss = permute(flipud(obj.stim), [2 1 3 4]);
+            cnt=fwrite(fid,ss*255,'uchar');
             wrErr = wrErr | (cnt~=obj.width*obj.height*obj.length*obj.channels);
             
             % if there has been an error along the way, inform user
