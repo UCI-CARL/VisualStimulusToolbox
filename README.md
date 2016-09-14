@@ -1,5 +1,6 @@
 VisualStimulusToolbox
 =====================
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.154061.svg)](https://doi.org/10.5281/zenodo.154061)
 
 **VisualStimulusToolbox** is a lightweight MATLAB toolbox for generating, storing,
 and plotting 2D visual stimuli commonly used in vision and neuroscience research,
@@ -22,6 +23,9 @@ The toolbox is a lightweight alternative to the more comprehensive
 We use
 [GitHub issues](https://github.com/UCI-CARL/VisualStimulusToolbox/issues)
 for tracking requests and bugs.
+
+If you use this code in a scientific contribution, please cite as follows:
+> Beyeler, M. "Visual Stimulus Toolbox". Zenodo, June 22, 2016. doi:10.5281/zenodo.154061.
 
 
 ## Installation
