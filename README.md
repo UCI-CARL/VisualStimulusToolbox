@@ -1,5 +1,5 @@
-VisualStimulusToolbox
-=====================
+VisualStimulusToolbox 1.0.0
+===========================
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.154061.svg)](https://doi.org/10.5281/zenodo.154061)
 
 **VisualStimulusToolbox** is a lightweight MATLAB toolbox for generating, storing,
@@ -24,8 +24,22 @@ We use
 [GitHub issues](https://github.com/UCI-CARL/VisualStimulusToolbox/issues)
 for tracking requests and bugs.
 
-If you use this code in a scientific contribution, please cite as follows:
-> Beyeler, M. "Visual Stimulus Toolbox". Zenodo, June 22, 2016. doi:10.5281/zenodo.154061.
+If you use this code in a scientific contribution, please consider citing it as:
+> Beyeler, M. "Visual Stimulus Toolbox: v1.0.0". Zenodo, June 22, 2016. doi:10.5281/zenodo.154061.
+
+Or use the following bibtex:
+```
+@misc{visualstimulus,
+  author       = {Michael Beyeler},
+  title        = {Visual Stimulus Toolbox: v1.0.0},
+  month        = {June},
+  year         = {2016},
+  doi          = {10.5281/zenodo.154061},
+  url          = {http://dx.doi.org/10.5281/zenodo.154061},
+  publisher    = {Zenodo}
+}
+```
+
 
 
 ## Installation
