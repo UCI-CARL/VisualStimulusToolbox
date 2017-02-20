@@ -77,8 +77,8 @@ and storing visual stimuli such as:
 
 #### Creating Your First Stimulus
 
-A stimulus is intantiated by passing the desired stimulus [height, width]
-(in pixels) to the constructor:
+A stimulus is intantiated by passing the desired stimulus height
+and width (in pixels) to the constructor:
 
 ```Matlab
 >> dot = DotStim([120 160])
