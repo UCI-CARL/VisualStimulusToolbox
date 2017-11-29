@@ -1,4 +1,4 @@
-VisualStimulusToolbox 1.0.0
+VisualStimulusToolbox 1.0.1
 ===========================
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.154061.svg)](https://doi.org/10.5281/zenodo.154061)
 
