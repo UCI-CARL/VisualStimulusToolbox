@@ -11,6 +11,9 @@ Release 1.0
 Build 1.0.1
 ---------------------
 
+2017-11-28  Michael Beyeler <mbeyeler@uci.edu>
+ - Removed outdated VisualStimulus.m
+
 2016-06-22  Michael Beyeler <mbeyeler@uci.edu>
  * Improved CARLsim integration.
  - Removed outdated RELEASE_NOTES.
